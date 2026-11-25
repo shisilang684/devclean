@@ -9,7 +9,7 @@ import { discover, scanAll, scanCandidates, totalOf, type ScanItem } from "./sca
 import { dirSize, findProjectArtifacts, pathExists } from "./util/fs.js";
 import { createPalette, renderTable, renderSummary, renderJson, removeFooter, type Palette } from "./report.js";
 import { cleanItems } from "./clean.js";
-import { detectEnv } from "./adapters.js";
+import { ADAPTERS, detectEnv } from "./adapters.js";
 import { loadConfig } from "./config.js";
 import { formatBytes, formatCount, truncateMiddle } from "./util/format.js";
 
@@ -142,12 +142,66 @@ function parseOnly(flags: Flags): string[] | undefined {
   return raw.split(",").map((s) => s.trim()).filter(Boolean);
 }
 
+function editDistance(a: string, b: string): number {
+  const rows = a.length + 1;
+  const cols = b.length + 1;
+  let previous = Array.from({ length: cols }, (_, i) => i);
+  for (let i = 1; i < rows; i += 1) {
+    const current = [i];
+    for (let j = 1; j < cols; j += 1) {
+      current[j] = Math.min(
+        previous[j]! + 1,
+        current[j - 1]! + 1,
+        previous[j - 1]! + (a[i - 1] === b[j - 1] ? 0 : 1),
+      );
+    }
+    previous = current;
+  }
+  return previous[cols - 1]!;
+}
+
+function closestId(id: string, ids: string[]): string | undefined {
+  let best: string | undefined;
+  let bestScore = Number.POSITIVE_INFINITY;
+  for (const candidate of ids) {
+    const score = editDistance(id, candidate);
+    if (score < bestScore) {
+      bestScore = score;
+      best = candidate;
+    }
+  }
+  return bestScore <= Math.max(1, Math.floor(id.length / 3)) ? best : undefined;
+}
+
+/** Warn about --only ids that match no adapter or custom cache. */
+async function warnUnknownOnly(parsed: Parsed, p: Palette): Promise<void> {
+  const only = parseOnly(parsed.flags);
+  if (!only || only.length === 0) return;
+  const config = await loadConfig(detectEnv());
+  const known = [...ADAPTERS.map((adapter) => adapter.id), ...config.extra.map((extra) => extra.id)];
+  const unknown = only.filter((id) => !known.includes(id));
+  if (unknown.length === 0) return;
+  for (const id of unknown) {
+    const hint = closestId(id, known);
+    process.stderr.write(
+      p.yellow('warning: unknown cache id "' + id + '"') +
+        (hint ? p.dim(' - did you mean "' + hint + '"?') : "") +
+        "\n",
+    );
+  }
+  if (unknown.length === only.length) {
+    process.stderr.write(p.dim("known ids: " + known.join(", ")) + "\n");
+  }
+}
+
 async function commandScan(parsed: Parsed, p: Palette): Promise<void> {
+  const only = parseOnly(parsed.flags);
+  await warnUnknownOnly(parsed, p);
   const json = Boolean(parsed.flags.json);
   const progress = progressReporter(p, !json && Boolean(process.stderr.isTTY));
   const started = Date.now();
   const { items } = await scanAll({
-    only: parseOnly(parsed.flags),
+    only,
     onScanStart: (candidate) => progress.start(candidate.name),
     onScanDone: (item) => progress.done(item.name, formatBytes(item.bytes)),
   });
@@ -163,7 +217,11 @@ async function commandScan(parsed: Parsed, p: Palette): Promise<void> {
     return;
   }
   if (shown.length === 0) {
-    process.stdout.write(p.green("Nothing to clean - no dev caches found.") + "\n");
+    const message =
+      only && only.length > 0
+        ? "No caches matched --only " + only.join(",") + "."
+        : "No dev caches found on this machine.";
+    process.stdout.write(p.green(message) + "\n");
     return;
   }
 
@@ -174,6 +232,7 @@ async function commandScan(parsed: Parsed, p: Palette): Promise<void> {
 }
 
 async function commandClean(parsed: Parsed, p: Palette): Promise<void> {
+  await warnUnknownOnly(parsed, p);
   const includeHigh = Boolean(parsed.flags.all);
   const json = Boolean(parsed.flags.json);
   const progress = progressReporter(p, !json && Boolean(process.stderr.isTTY));

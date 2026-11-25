@@ -54,3 +54,18 @@ test("report explains an empty scan instead of writing an empty file", async () 
   await assert.rejects(fs.access(out));
   await fs.rm(dir, { recursive: true, force: true });
 });
+test("an unknown --only id suggests the closest match", async () => {
+  const { code, stdout, stderr } = await run(["scan", "--only", "npmm"]);
+  assert.equal(code, 0);
+  assert.match(stderr, /unknown cache id "npmm"/);
+  assert.match(stderr, /did you mean "npm"/);
+  assert.match(stdout, /No caches matched --only npmm/);
+});
+
+test("a partially unknown --only list still scans the known ids", async () => {
+  const { code, stdout, stderr } = await run(["scan", "--only", "npm,zzz", "--json"]);
+  assert.equal(code, 0);
+  assert.match(stderr, /unknown cache id "zzz"/);
+  const data = JSON.parse(stdout);
+  assert.ok(data.items.every((item) => item.id === "npm"));
+});
