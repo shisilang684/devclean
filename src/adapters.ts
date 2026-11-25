@@ -41,6 +41,11 @@ export function detectEnv(): Env {
 const isWin = (env: Env) => env.platform === "win32";
 const isMac = (env: Env) => env.platform === "darwin";
 
+// Build paths with the semantics of the target platform, not the host, so the
+// same environment object produces the same paths on any machine.
+const envPath = (env: Env) => (isWin(env) ? path.win32 : path.posix);
+const joinPath = (env: Env, ...parts: string[]) => envPath(env).join(...parts);
+
 function platformPath(env: Env, win: string, mac: string, linux: string): string {
   if (isWin(env)) return win;
   if (isMac(env)) return mac;
@@ -56,8 +61,8 @@ export const ADAPTERS: Adapter[] = [
     paths(env) {
       const base =
         env.vars.npm_config_cache ||
-        platformPath(env, path.join(env.localAppData, "npm-cache"), path.join(env.home, ".npm"), path.join(env.home, ".npm"));
-      return [path.join(base, "_cacache")];
+        platformPath(env, joinPath(env, env.localAppData, "npm-cache"), joinPath(env, env.home, ".npm"), joinPath(env, env.home, ".npm"));
+      return [joinPath(env, base, "_cacache")];
     },
   },
   {
@@ -69,9 +74,9 @@ export const ADAPTERS: Adapter[] = [
       return [
         platformPath(
           env,
-          path.join(env.localAppData, "pnpm", "store"),
-          path.join(env.home, "Library", "pnpm", "store"),
-          path.join(env.home, ".local", "share", "pnpm", "store"),
+          joinPath(env, env.localAppData, "pnpm", "store"),
+          joinPath(env, env.home, "Library", "pnpm", "store"),
+          joinPath(env, env.home, ".local", "share", "pnpm", "store"),
         ),
       ];
     },
@@ -85,9 +90,9 @@ export const ADAPTERS: Adapter[] = [
       return [
         platformPath(
           env,
-          path.join(env.localAppData, "Yarn", "Cache"),
-          path.join(env.home, "Library", "Caches", "Yarn"),
-          path.join(env.home, ".cache", "yarn"),
+          joinPath(env, env.localAppData, "Yarn", "Cache"),
+          joinPath(env, env.home, "Library", "Caches", "Yarn"),
+          joinPath(env, env.home, ".cache", "yarn"),
         ),
       ];
     },
@@ -98,7 +103,7 @@ export const ADAPTERS: Adapter[] = [
     risk: "low",
     note: "Bun's install cache.",
     paths(env) {
-      return [path.join(env.home, ".bun", "install", "cache")];
+      return [joinPath(env, env.home, ".bun", "install", "cache")];
     },
   },
   {
@@ -110,9 +115,9 @@ export const ADAPTERS: Adapter[] = [
       return [
         platformPath(
           env,
-          path.join(env.localAppData, "pip", "Cache"),
-          path.join(env.home, "Library", "Caches", "pip"),
-          path.join(env.home, ".cache", "pip"),
+          joinPath(env, env.localAppData, "pip", "Cache"),
+          joinPath(env, env.home, "Library", "Caches", "pip"),
+          joinPath(env, env.home, ".cache", "pip"),
         ),
       ];
     },
@@ -126,9 +131,9 @@ export const ADAPTERS: Adapter[] = [
       return [
         platformPath(
           env,
-          path.join(env.localAppData, "uv", "cache"),
-          path.join(env.home, "Library", "Caches", "uv"),
-          path.join(env.home, ".cache", "uv"),
+          joinPath(env, env.localAppData, "uv", "cache"),
+          joinPath(env, env.home, "Library", "Caches", "uv"),
+          joinPath(env, env.home, ".cache", "uv"),
         ),
       ];
     },
@@ -139,7 +144,7 @@ export const ADAPTERS: Adapter[] = [
     risk: "low",
     note: "Crates downloaded by Cargo. Rebuilt from crates.io when needed.",
     paths(env) {
-      return [path.join(env.home, ".cargo", "registry"), path.join(env.home, ".cargo", "git")];
+      return [joinPath(env, env.home, ".cargo", "registry"), joinPath(env, env.home, ".cargo", "git")];
     },
   },
   {
@@ -151,9 +156,9 @@ export const ADAPTERS: Adapter[] = [
       return [
         platformPath(
           env,
-          path.join(env.localAppData, "go-build"),
-          path.join(env.home, "Library", "Caches", "go-build"),
-          path.join(env.home, ".cache", "go-build"),
+          joinPath(env, env.localAppData, "go-build"),
+          joinPath(env, env.home, "Library", "Caches", "go-build"),
+          joinPath(env, env.home, ".cache", "go-build"),
         ),
       ];
     },
@@ -164,7 +169,7 @@ export const ADAPTERS: Adapter[] = [
     risk: "low",
     note: "Dependency and build caches under ~/.gradle/caches.",
     paths(env) {
-      return [path.join(env.home, ".gradle", "caches")];
+      return [joinPath(env, env.home, ".gradle", "caches")];
     },
   },
   {
@@ -173,7 +178,7 @@ export const ADAPTERS: Adapter[] = [
     risk: "medium",
     note: "Local Maven repository. Safe to delete, but large to re-download.",
     paths(env) {
-      return [path.join(env.home, ".m2", "repository")];
+      return [joinPath(env, env.home, ".m2", "repository")];
     },
   },
   {
@@ -185,9 +190,9 @@ export const ADAPTERS: Adapter[] = [
       return [
         platformPath(
           env,
-          path.join(env.localAppData, "ms-playwright"),
-          path.join(env.home, "Library", "Caches", "ms-playwright"),
-          path.join(env.home, ".cache", "ms-playwright"),
+          joinPath(env, env.localAppData, "ms-playwright"),
+          joinPath(env, env.home, "Library", "Caches", "ms-playwright"),
+          joinPath(env, env.home, ".cache", "ms-playwright"),
         ),
       ];
     },
@@ -198,7 +203,7 @@ export const ADAPTERS: Adapter[] = [
     risk: "low",
     note: "Chrome builds downloaded by Puppeteer.",
     paths(env) {
-      return [path.join(env.home, ".cache", "puppeteer")];
+      return [joinPath(env, env.home, ".cache", "puppeteer")];
     },
   },
   {
@@ -207,8 +212,8 @@ export const ADAPTERS: Adapter[] = [
     risk: "medium",
     note: "Model and dataset cache. Deleted models are re-downloaded on next use.",
     paths(env) {
-      if (env.vars.HF_HOME) return [path.join(env.vars.HF_HOME, "hub")];
-      return [path.join(env.home, ".cache", "huggingface", "hub")];
+      if (env.vars.HF_HOME) return [joinPath(env, env.vars.HF_HOME, "hub")];
+      return [joinPath(env, env.home, ".cache", "huggingface", "hub")];
     },
   },
   {
@@ -217,7 +222,7 @@ export const ADAPTERS: Adapter[] = [
     risk: "high",
     note: "Downloaded local LLM weights. Deleting forces a full re-pull.",
     paths(env) {
-      const list = [path.join(env.home, ".ollama", "models")];
+      const list = [joinPath(env, env.home, ".ollama", "models")];
       if (!isWin(env) && !isMac(env)) list.push("/usr/share/ollama/.ollama/models");
       return list;
     },
@@ -228,7 +233,7 @@ export const ADAPTERS: Adapter[] = [
     risk: "high",
     note: "Downloaded local LLM weights. Deleting forces a full re-download.",
     paths(env) {
-      return [path.join(env.home, ".lmstudio", "models"), path.join(env.home, ".cache", "lm-studio", "models")];
+      return [joinPath(env, env.home, ".lmstudio", "models"), joinPath(env, env.home, ".cache", "lm-studio", "models")];
     },
   },
   {
@@ -237,7 +242,7 @@ export const ADAPTERS: Adapter[] = [
     risk: "medium",
     note: "Global package folder shared by .NET projects. dotnet restore fetches it again.",
     paths(env) {
-      return [path.join(env.home, ".nuget", "packages")];
+      return [joinPath(env, env.home, ".nuget", "packages")];
     },
   },
   {
@@ -247,8 +252,8 @@ export const ADAPTERS: Adapter[] = [
     note: "Package archives extracted into conda environments. Existing envs may share these files.",
     paths(env) {
       const roots = ["miniconda3", "anaconda3", "miniforge3", "mambaforge"];
-      const list = roots.map((root) => path.join(env.home, root, "pkgs"));
-      list.push(path.join(env.localAppData, "conda", "pkgs"));
+      const list = roots.map((root) => joinPath(env, env.home, root, "pkgs"));
+      list.push(joinPath(env, env.localAppData, "conda", "pkgs"));
       return list;
     },
   },
@@ -258,7 +263,7 @@ export const ADAPTERS: Adapter[] = [
     risk: "low",
     note: "Scala and Java dependencies downloaded by sbt.",
     paths(env) {
-      return [path.join(env.home, ".ivy2", "cache"), path.join(env.home, ".sbt", "boot")];
+      return [joinPath(env, env.home, ".ivy2", "cache"), joinPath(env, env.home, ".sbt", "boot")];
     },
   },
   {
@@ -271,9 +276,9 @@ export const ADAPTERS: Adapter[] = [
         env.vars.DENO_DIR ||
         platformPath(
           env,
-          path.join(env.localAppData, "deno"),
-          path.join(env.home, "Library", "Caches", "deno"),
-          path.join(env.home, ".cache", "deno"),
+          joinPath(env, env.localAppData, "deno"),
+          joinPath(env, env.home, "Library", "Caches", "deno"),
+          joinPath(env, env.home, ".cache", "deno"),
         );
       return [dir];
     },
@@ -287,9 +292,9 @@ export const ADAPTERS: Adapter[] = [
       return [
         platformPath(
           env,
-          path.join(env.localAppData, "Cypress", "Cache"),
-          path.join(env.home, "Library", "Caches", "Cypress"),
-          path.join(env.home, ".cache", "Cypress"),
+          joinPath(env, env.localAppData, "Cypress", "Cache"),
+          joinPath(env, env.home, "Library", "Caches", "Cypress"),
+          joinPath(env, env.home, ".cache", "Cypress"),
         ),
       ];
     },
@@ -303,9 +308,9 @@ export const ADAPTERS: Adapter[] = [
       return [
         platformPath(
           env,
-          path.join(env.localAppData, "electron", "Cache"),
-          path.join(env.home, "Library", "Caches", "electron"),
-          path.join(env.home, ".cache", "electron"),
+          joinPath(env, env.localAppData, "electron", "Cache"),
+          joinPath(env, env.home, "Library", "Caches", "electron"),
+          joinPath(env, env.home, ".cache", "electron"),
         ),
       ];
     },
@@ -319,9 +324,9 @@ export const ADAPTERS: Adapter[] = [
       return [
         platformPath(
           env,
-          path.join(env.localAppData, "Composer", "Cache"),
-          path.join(env.home, "Library", "Caches", "composer"),
-          path.join(env.home, ".cache", "composer"),
+          joinPath(env, env.localAppData, "Composer", "Cache"),
+          joinPath(env, env.home, "Library", "Caches", "composer"),
+          joinPath(env, env.home, ".cache", "composer"),
         ),
       ];
     },
