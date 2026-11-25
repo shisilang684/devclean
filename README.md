@@ -58,6 +58,31 @@ Requires Node.js 18+. Works on Windows, macOS, and Linux.
 
 `clean` skips high-risk caches unless you pass `--all`. Nothing is deleted without showing you the list and the total first.
 
+## Custom caches and ignores
+
+You can teach devclean about a cache it does not ship with, or hide one you do not care
+about, without waiting for a release:
+
+```bash
+devclean config
+```
+
+That prints the config path (`%APPDATA%\devclean\config.json` on Windows,
+`~/Library/Application Support/devclean/config.json` on macOS,
+`~/.config/devclean/config.json` on Linux) and the current settings. A minimal file:
+
+```json
+{
+  "ignore": ["maven"],
+  "extra": [
+    { "name": "Bazel cache", "path": "~/.cache/bazel", "risk": "medium" }
+  ]
+}
+```
+
+Paths must be absolute or start with `~`; `risk` defaults to `medium`. Set
+`DEVCLEAN_CONFIG` to load a different file (handy for a shared CI config).
+
 ## Project artifacts
 
 ```

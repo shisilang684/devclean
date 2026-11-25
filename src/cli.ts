@@ -6,12 +6,14 @@ import { writeFile } from "node:fs/promises";
 import { renderHtmlReport } from "./report-html.js";
 import { selectItems } from "./tui.js";
 import { discover, scanAll, scanCandidates, totalOf, type ScanItem } from "./scan.js";
-import { dirSize, findProjectArtifacts } from "./util/fs.js";
+import { dirSize, findProjectArtifacts, pathExists } from "./util/fs.js";
 import { createPalette, renderTable, renderSummary, renderJson, removeFooter, type Palette } from "./report.js";
 import { cleanItems } from "./clean.js";
+import { detectEnv } from "./adapters.js";
+import { loadConfig } from "./config.js";
 import { formatBytes, formatCount, truncateMiddle } from "./util/format.js";
 
-const VERSION = "0.4.0";
+const VERSION = "0.5.0";
 
 type FlagValue = string | boolean;
 type Flags = Record<string, FlagValue>;
@@ -22,7 +24,7 @@ interface Parsed {
   flags: Flags;
 }
 
-const COMMANDS = new Set(["scan", "clean", "projects", "report", "help"]);
+const COMMANDS = new Set(["scan", "clean", "projects", "report", "config", "help"]);
 const VALUE_FLAGS = new Set(["only", "top", "depth", "out"]);
 
 function parseArgs(argv: string[]): Parsed {
@@ -77,6 +79,7 @@ function helpText(p: Palette): string {
     "  devclean clean -i         pick caches interactively",
     "  devclean projects [dir]   find node_modules, .venv, __pycache__, target",
     "  devclean report           write a shareable HTML report of the scan",
+    "  devclean config           show the config file (ignore lists, custom caches)",
     "  devclean clean --all      include local LLM weights (high risk)",
     "",
     p.bold("Options"),
@@ -355,6 +358,52 @@ async function commandReport(parsed: Parsed, p: Palette): Promise<void> {
   }
 }
 
+async function commandConfig(parsed: Parsed, p: Palette): Promise<void> {
+  const env = detectEnv();
+  const config = await loadConfig(env);
+  const exists = await pathExists(config.sourcePath);
+
+  if (parsed.flags.json) {
+    process.stdout.write(
+      JSON.stringify(
+        { path: config.sourcePath, exists, ignore: config.ignore, extra: config.extra, warnings: config.warnings },
+        null,
+        2,
+      ) + "\n",
+    );
+    return;
+  }
+
+  process.stdout.write(p.bold("Config") + "\n  " + config.sourcePath + "\n\n");
+  for (const warning of config.warnings) process.stdout.write(p.yellow("warning: " + warning) + "\n");
+
+  if (!exists) {
+    process.stdout.write(p.dim("No config file yet. Create one to ignore caches or add your own:") + "\n\n");
+    process.stdout.write(
+      [
+        "{",
+        '  "ignore": ["maven"],',
+        '  "extra": [',
+        '    { "name": "Bazel cache", "path": "~/.cache/bazel", "risk": "medium" }',
+        "  ]",
+        "}",
+        "",
+      ].join("\n"),
+    );
+    return;
+  }
+
+  if (config.ignore.length === 0) process.stdout.write("ignore: none\n");
+  else process.stdout.write("ignore: " + config.ignore.join(", ") + "\n");
+  if (config.extra.length === 0) process.stdout.write("extra:  none\n");
+  else {
+    process.stdout.write("extra:\n");
+    for (const item of config.extra) {
+      process.stdout.write("  " + item.name + "  " + item.risk + "  " + item.path + "\n");
+    }
+  }
+}
+
 async function main(): Promise<void> {
   const parsed = parseArgs(process.argv.slice(2));
   const colorEnabled = Boolean(process.stdout.isTTY) && !parsed.flags["no-color"] && !process.env.NO_COLOR;
@@ -379,6 +428,10 @@ async function main(): Promise<void> {
   }
   if (parsed.command === "projects") {
     await commandProjects(parsed, p);
+    return;
+  }
+  if (parsed.command === "config") {
+    await commandConfig(parsed, p);
     return;
   }
   await commandScan(parsed, p);

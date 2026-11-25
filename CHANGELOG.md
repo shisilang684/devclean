@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5.0
+
+- Config file for ignores and custom caches: `devclean config` shows it, `DEVCLEAN_CONFIG`
+  overrides the location. Custom entries are validated and default to medium risk.
+
 ## 0.4.0
 
 - Seven new cache adapters: NuGet, conda, sbt/Ivy, Deno, Cypress, Electron, Composer (22 total).

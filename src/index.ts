@@ -5,4 +5,5 @@ export type { ScanItem, ScanOptions } from "./scan.js";
 export { cleanItems, isSafeTarget } from "./clean.js";
 export { createPalette, renderJson, renderSummary, renderTable } from "./report.js";
 export { dirSize, findProjectArtifacts } from "./util/fs.js";
-export { formatBytes, formatCount, percent } from "./util/format.js";
+export { formatBytes, formatCount, percent } from "./util/format.js";export { configPath, loadConfig } from "./config.js";
+export type { DevcleanConfig, ExtraCache } from "./config.js";
