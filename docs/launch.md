@@ -113,3 +113,31 @@ Pitch to Node Weekly, JavaScript Weekly, TLDR, Console DevTools:
 - Reply to every issue within 24h for two weeks.
 - Ship a visible improvement within 7 days: it converts one-time visitors into watchers.
 - Write a short "what I learned launching" post and link it back to the repo.
+
+## Prepared answers (launch day)
+
+**"How is this different from npkill / cleanmymac / BleachBit?"**
+> npkill only knows node_modules. Cleaners either ignore caches or treat model weights like
+> disposable files. devclean covers 22 families in one pass and labels risk, so you decide
+> per item - and it never touches high-risk data unless you ask.
+
+**"Will it delete my downloaded models?"**
+> Not by default. Ollama and LM Studio are high risk and skipped by `clean`; only
+> `--all` includes them, and `--dry-run` shows the plan first.
+
+**"Is it safe?"**
+> The allow-list is in src/adapters.ts - if a path is not a known cache or a project
+> artifact inside a real project, devclean refuses it. Symlinks are never followed.
+> --dry-run deletes nothing. MIT, no telemetry.
+
+**"Why TypeScript and not Rust/Go?"**
+> Zero install friction: `npx devclean` runs on any machine with Node 18, which every
+> developer already has. A single static binary is on the roadmap if people want it.
+
+**"Windows support?"**
+> Yes - the first version was written on Windows, where the cache sprawl is worst.
+> CI runs the suite on Windows, macOS and Linux.
+
+**"Can it clean Docker / WSL / Xcode?"**
+> Not yet. Docker images and WSL disks are not caches and deleting them is destructive,
+> so they need a different design. Open an issue with your use case.

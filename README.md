@@ -82,8 +82,13 @@ Only directories inside a real project (one with `package.json`, `pyproject.toml
 - **Dry by default when you ask for it.** `--dry-run` prints the plan and deletes nothing.
 - **Risk levels.** High-risk items (local LLM weights) are opt-in.
 - **Allow-list.** `devclean` refuses to delete a path that is not a recognized cache or project artifact, even if a bug tried to.
+- **Symlinks are never followed.** A cache cannot redirect the scan (or the delete) somewhere else.
+- **Reports exclude high-risk items** from the reclaimable total, so a shared screenshot never overstates what is safe.
 - **No telemetry, no network calls.** Everything happens locally.
 - **Failures are reported, not hidden.** Locked files on Windows are listed with the error.
+- **Auditable in one sitting.** ~1,500 lines of dependency-free TypeScript; the allow-list lives in `src/adapters.ts`.
+
+Security reports: see [SECURITY.md](SECURITY.md).
 
 ## Scripting
 
