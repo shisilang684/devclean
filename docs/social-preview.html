@@ -1,0 +1,44 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><style>
+  *{box-sizing:border-box}
+  html,body{margin:0;width:1280px;height:640px;overflow:hidden;background:#0b0e14;font-family:"Segoe UI",Inter,system-ui,sans-serif;}
+  .bg{position:absolute;inset:0;background:
+     radial-gradient(900px 420px at 12% 0%, rgba(63,185,80,.18), transparent 60%),
+     radial-gradient(700px 500px at 100% 100%, rgba(88,166,255,.14), transparent 65%);}
+  .grid{position:absolute;inset:0;background-image:linear-gradient(#ffffff08 1px,transparent 1px),linear-gradient(90deg,#ffffff08 1px,transparent 1px);background-size:64px 64px;}
+  .wrap{position:relative;display:flex;height:100%;padding:64px 72px;align-items:center;gap:56px;}
+  .left{flex:1;min-width:0}
+  .logo{display:block;font-family:"Cascadia Code",Consolas,monospace;font-weight:700;font-size:74px;color:#e6edf3;letter-spacing:-2px;}
+  .logo .accent{color:#7ee787}
+  .tag{margin-top:22px;font-size:31px;line-height:1.32;color:#c9d1d9;font-weight:600;letter-spacing:-.3px;max-width:640px}
+  .tag b{color:#7ee787;font-weight:700}
+  .meta{margin-top:30px;display:flex;align-items:center;gap:18px;color:#8b949e;font-size:17px;font-family:"Cascadia Code",Consolas,monospace}
+  .cmd{background:#11151f;border:1px solid #2a3446;border-radius:9px;padding:10px 16px;color:#e6edf3}
+  .cmd .p{color:#7ee787}
+  .sep{width:1px;height:22px;background:#2a3446}
+  .right{width:430px;flex:none;display:flex;flex-direction:column;gap:12px}
+  .card{border-radius:12px;padding:16px 18px;border:1px solid #ffffff1f;font-family:"Cascadia Code",Consolas,monospace;display:flex;flex-direction:column;justify-content:space-between;align-items:stretch}
+  .row{display:flex;justify-content:space-between;align-items:center;width:100%}
+  .card .n{font-size:19px;color:#e6edf3;font-weight:600}
+  .card .s{font-size:17px;color:#0b0e14;background:#ffffffd9;padding:3px 9px;border-radius:6px;font-weight:700}
+  .c1{background:linear-gradient(135deg,#0f2a1a,#14361f);height:196px;border-color:#2ea04366}
+  .c2{background:linear-gradient(135deg,#2a2410,#3a2f14);height:104px;border-color:#d2992266}
+  .c3{background:linear-gradient(135deg,#101b2e,#152540);height:64px;border-color:#58a6ff55}
+  .c1 .n,.c2 .n,.c3 .n{color:#e6edf3}
+  .badge{align-self:flex-start;font-size:13px;color:#7ee787;border:1px solid #2ea04366;border-radius:999px;padding:3px 10px;font-family:"Cascadia Code",monospace}
+</style></head><body>
+<div class="bg"></div><div class="grid"></div>
+<div class="wrap">
+  <div class="left">
+    <div class="logo">dev<span class="accent">clean</span></div>
+    <div class="tag">Find and reclaim the <b>gigabytes</b> your dev tools are hoarding.</div>
+    <div class="meta"><span class="cmd"><span class="p">$</span> npx devclean</span><span class="sep"></span><span>22 cache families</span></div>
+  </div>
+  <div class="right">
+    <div class="card c1"><span class="badge">low risk</span><div class="row"><span class="n">pnpm store</span><span class="s">998 MB</span></div></div>
+    <div class="card c2"><div class="row"><span class="n">Maven repo</span><span class="s">327 MB</span></div></div>
+    <div class="card c3"><div class="row"><span class="n">npm cache</span><span class="s">55.9 MB</span></div></div>
+  </div>
+</div>
+<div style="position:absolute;right:48px;bottom:34px;font-family:'Cascadia Code',Consolas,monospace;font-size:15px;color:#6e7681;letter-spacing:.5px">github.com/shisilang684/devclean</div>
+</body></html>

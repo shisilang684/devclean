@@ -9,6 +9,7 @@ output beats polished copy.
 - [ ] Repo has a description, topics, and the demo image renders on GitHub
 - [ ] README first screen answers: what, why, how, how fast
 - [ ] CI badge is green
+- [ ] Social preview uploaded in Settings -> General (docs/social-preview.png, 1280x640)
 - [ ] You are available to reply for the next 4 hours
 
 ## Show HN
