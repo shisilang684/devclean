@@ -1,8 +1,12 @@
 # devclean
 
+English | [简体中文](README.zh-CN.md)
+
 **Your dev machine is hoarding gigabytes. Find them, see them, reclaim them.**
 
 `devclean` scans every cache your toolchain quietly accumulated - npm, pnpm, pip, Cargo, Gradle, Playwright browsers, Hugging Face models, local LLM weights - and shows you exactly what is safe to delete. One command, no config, no telemetry.
+
+![devclean scanning and reclaiming 1.4 GB of developer caches](docs/demo.png)
 
 ```
 $ npx devclean
