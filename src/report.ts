@@ -1,6 +1,6 @@
 import type { ScanItem } from "./scan.js";
 import type { Risk } from "./adapters.js";
-import { formatBytes, formatCount, percent, truncateMiddle, bar, plural } from "./util/format.js";
+import { formatBytes, formatCount, percent, truncateMiddle, truncatePath, bar, plural } from "./util/format.js";
 
 export interface Palette {
   bold: (s: string) => string;
@@ -87,7 +87,7 @@ export function renderTable(items: ScanItem[], options: TableOptions = {}): stri
       p.cyan(shareText),
       padLeft(formatCount(item.files), filesWidth),
       padRight(item.risk, riskWidth),
-      showPath ? p.dim(truncateMiddle(item.path, pathWidth)) : "",
+      showPath ? p.dim(truncatePath(item.path, pathWidth)) : "",
     ].filter(Boolean);
     // Color the risk cell only.
     cells[4] = riskColor(p, item.risk)(padRight(item.risk, riskWidth));

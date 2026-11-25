@@ -2,6 +2,8 @@
 
 English | [简体中文](README.zh-CN.md)
 
+[![ci](https://github.com/shisilang684/devclean/actions/workflows/ci.yml/badge.svg)](https://github.com/shisilang684/devclean/actions/workflows/ci.yml)
+
 **Your dev machine is hoarding gigabytes. Find them, see them, reclaim them.**
 
 `devclean` scans every cache your toolchain quietly accumulated - npm, pnpm, pip, Cargo, Gradle, Playwright browsers, Hugging Face models, local LLM weights - and shows you exactly what is safe to delete. One command, no config, no telemetry.
@@ -37,7 +39,7 @@ npx devclean projects .   # find node_modules/.venv/target inside your projects
 npx devclean report       # write a shareable HTML report
 ```
 
-Requires Node.js 18+. Works on Windows, macOS, and Linux.
+Requires Node.js 20+. Works on Windows, macOS, and Linux.
 
 ## What it scans
 
@@ -57,6 +59,20 @@ Requires Node.js 18+. Works on Windows, macOS, and Linux.
 | Ollama, LM Studio | **high** | Local LLM weights - deleting forces a full re-pull |
 
 `clean` skips high-risk caches unless you pass `--all`. Nothing is deleted without showing you the list and the total first.
+
+## How it compares
+
+|  | `devclean` | `npkill` | GUI disk cleaners | `du` + `rm -rf` |
+| --- | --- | --- | --- | --- |
+| Package caches (npm, pnpm, pip, Cargo, Gradle...) | all 22, one pass | `node_modules` only | generally not cache-aware | only the paths you already know |
+| Local LLM weights (Ollama, LM Studio) | yes, high risk and opt-in | no | often treated as ordinary junk | yes, with no warning |
+| Risk label before anything is deleted | yes | no | partial | no |
+| Project artifacts (`node_modules`, `.venv`, `target`) | yes, inside real projects only | `node_modules` only | no | manual |
+| Shareable report | self-contained HTML treemap | no | no | no |
+| Install | `npx devclean` | `npx npkill` | app install | already there |
+
+The gap that matters is the second row: a cleaner that does not know the difference between
+a 60 GB model download and a stale tarball will eventually delete something expensive.
 
 ## Custom caches and ignores
 

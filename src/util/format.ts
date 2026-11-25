@@ -30,6 +30,27 @@ export function truncateMiddle(text: string, max: number): string {
   return `${text.slice(0, head)}...${text.slice(text.length - tail)}`;
 }
 
+/**
+ * Shorten a long path, preferring the tail: C:\Users\me\AppData\...\pnpm\store
+ * becomes ...\AppData\Local\pnpm\store so the distinguishing end stays visible.
+ */
+export function truncatePath(text: string, max: number): string {
+  if (text.length <= max) return text;
+  if (max <= 4) return text.slice(text.length - max);
+  const sep = text.includes("\\") ? "\\" : "/";
+  const parts = text.split(/[\\/]/).filter((part) => part.length > 0);
+  if (parts.length === 0) return text.slice(text.length - max);
+
+  let tail = parts[parts.length - 1]!;
+  for (let i = parts.length - 2; i >= 0; i -= 1) {
+    const next = parts[i]! + sep + tail;
+    if (next.length + 2 > max) break;
+    tail = next;
+  }
+  if (tail.length + 2 > max) return "\u2026" + tail.slice(tail.length - (max - 1));
+  return "\u2026" + sep + tail;
+}
+
 export function percent(part: number, whole: number): number {
   if (!whole) return 0;
   return Math.min(100, Math.max(0, (part / whole) * 100));

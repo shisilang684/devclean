@@ -23,7 +23,7 @@ output beats polished copy.
 > I kept running out of disk space, and every cleaner I tried either only knew about
 > node_modules or wanted to delete 60 GB of downloaded model weights without telling me.
 >
-> devclean scans 15 cache families in one pass - npm/pnpm/Yarn/Bun, pip/uv, Cargo, Go,
+> devclean scans 22 cache families in one pass - npm/pnpm/Yarn/Bun, pip/uv, Cargo, Go,
 > Gradle, Maven, Playwright, Puppeteer, Hugging Face, Ollama, LM Studio - and labels each
 > one by risk. `devclean clean` shows the list and the total first, then asks. High-risk
 > items (local LLM weights) are skipped unless you pass `--all`. `--dry-run` deletes nothing.
@@ -52,14 +52,14 @@ number you reclaimed and what surprised you. Plain links get removed.
 
 > 磁盘又满了，npkill 只认 node_modules，清理软件又分不清哪些是我的模型权重。
 > 于是写了个 devclean：一次扫描 npm/pnpm/pip/cargo/gradle/playwright/Hugging Face/
-> Ollama 等 15 类缓存，按风险分级，`clean` 先列清单再确认，`--dry-run` 只预览。
+> Ollama 等 22 类缓存，按风险分级，`clean` 先列清单再确认，`--dry-run` 只预览。
 > `devclean report` 能生成一个自带 treemap 的 HTML，方便贴给同事看。
 > 零依赖，Windows/macOS/Linux 都能跑，`npx devclean` 直接用。
 > 求补充我漏掉的缓存路径。
 
 ## 掘金 / 少数派
 
-写成"教程 + 数据"而不是"求 star"：先展示清理前后的磁盘占用截图，再讲 15 类缓存的
+写成"教程 + 数据"而不是"求 star"：先展示清理前后的磁盘占用截图，再讲 22 类缓存的
 位置和风险，最后一句放仓库链接。
 
 ## X / Twitter
@@ -93,7 +93,7 @@ Pitch to Node Weekly, JavaScript Weekly, TLDR, Console DevTools:
 
 > Subject: devclean - reclaim dev caches including AI model weights
 >
-> Hi, I built devclean, a zero-dependency CLI that scans 15 cache families (npm, pip,
+> Hi, I built devclean, a zero-dependency CLI that scans 22 cache families (npm, pip,
 > cargo, gradle, Playwright, Hugging Face, Ollama...) and shows what is safe to delete.
 > It is cross-platform, MIT, and works via npx. Happy to send a short blurb or answer
 > questions.

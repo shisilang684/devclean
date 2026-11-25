@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { formatBytes, formatCount, percent, truncateMiddle } from "../dist/util/format.js";
+import { formatBytes, formatCount, percent, truncateMiddle, truncatePath } from "../dist/util/format.js";
 
 test("formatBytes handles zero and small values", () => {
   assert.equal(formatBytes(0), "0 B");
@@ -33,4 +33,20 @@ test("truncateMiddle keeps both ends", () => {
   assert.ok(out.startsWith("C:\\Users"));
   assert.ok(out.endsWith("store"));
   assert.ok(out.includes("..."));
+});
+test("truncatePath keeps the end of the path", () => {
+  const out = truncatePath("C:\\Users\\someone\\AppData\\Local\\npm-cache\\_cacache", 34);
+  assert.ok(out.length <= 34, out);
+  assert.ok(out.startsWith("\u2026"), out);
+  assert.ok(out.endsWith("npm-cache\\_cacache") || out.endsWith("_cacache"), out);
+});
+
+test("truncatePath leaves short paths alone", () => {
+  assert.equal(truncatePath("C:\\cache", 40), "C:\\cache");
+});
+
+test("truncatePath handles a single oversized segment", () => {
+  const out = truncatePath("abcdefghijklmnop", 8);
+  assert.equal(out.length, 8);
+  assert.equal(out, "\u2026jklmnop");
 });

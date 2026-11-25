@@ -1,7 +1,7 @@
 import readline from "node:readline";
 import process from "node:process";
 import type { ScanItem } from "./scan.js";
-import { formatBytes, formatCount, truncateMiddle } from "./util/format.js";
+import { formatBytes, formatCount, truncateMiddle, truncatePath } from "./util/format.js";
 import type { Palette } from "./report.js";
 
 export interface TuiState {
@@ -67,7 +67,7 @@ export function renderTui(state: TuiState, palette: Palette, width = 100): strin
     const name = (cursor ? p.bold(">") : " ") + " " + box + " " + item.name.padEnd(nameWidth);
     const size = formatBytes(item.bytes).padStart(sizeWidth);
     const risk = item.risk.padEnd(riskWidth);
-    const meta = p.dim(truncateMiddle(item.path, pathWidth));
+    const meta = p.dim(truncatePath(item.path, pathWidth));
     lines.push(name + "  " + size + "  " + risk + "  " + meta);
   });
 
