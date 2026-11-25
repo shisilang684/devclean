@@ -2,13 +2,15 @@
 import path from "node:path";
 import process from "node:process";
 import readline from "node:readline/promises";
+import { writeFile } from "node:fs/promises";
+import { renderHtmlReport } from "./report-html.js";
 import { discover, scanAll, scanCandidates, totalOf, type ScanItem } from "./scan.js";
 import { dirSize, findProjectArtifacts } from "./util/fs.js";
 import { createPalette, renderTable, renderSummary, renderJson, removeFooter, type Palette } from "./report.js";
 import { cleanItems } from "./clean.js";
 import { formatBytes, formatCount, truncateMiddle } from "./util/format.js";
 
-const VERSION = "0.1.0";
+const VERSION = "0.2.0";
 
 type FlagValue = string | boolean;
 type Flags = Record<string, FlagValue>;
@@ -19,8 +21,8 @@ interface Parsed {
   flags: Flags;
 }
 
-const COMMANDS = new Set(["scan", "clean", "projects", "help"]);
-const VALUE_FLAGS = new Set(["only", "top", "depth"]);
+const COMMANDS = new Set(["scan", "clean", "projects", "report", "help"]);
+const VALUE_FLAGS = new Set(["only", "top", "depth", "out"]);
 
 function parseArgs(argv: string[]): Parsed {
   const flags: Flags = {};
@@ -68,6 +70,7 @@ function helpText(p: Palette): string {
     "  devclean                  scan the caches your dev tools left behind",
     "  devclean clean            delete low and medium risk caches",
     "  devclean projects [dir]   find node_modules, .venv, __pycache__, target",
+    "  devclean report           write a shareable HTML report of the scan",
     "  devclean clean --all      include local LLM weights (high risk)",
     "",
     p.bold("Options"),
@@ -78,6 +81,8 @@ function helpText(p: Palette): string {
     "  --yes            skip the confirmation prompt",
     "  --dry-run        show what would be deleted, delete nothing",
     "  --depth <n>      projects: maximum directory depth (default 6)",
+    "  --out <file>     report: output path (default devclean-report.html)",
+    "  --open           report: open the file after writing it",
     "  --no-color       disable ANSI colors",
     "  -h, --help       show this help",
     "  -v, --version    show the version",
@@ -296,6 +301,38 @@ async function commandProjects(parsed: Parsed, p: Palette): Promise<void> {
   process.stdout.write("\n" + p.green(p.bold("Reclaimed " + formatBytes(freed))) + "\n");
 }
 
+
+async function commandReport(parsed: Parsed, p: Palette): Promise<void> {
+  const json = Boolean(parsed.flags.json);
+  const progress = progressReporter(p, !json && Boolean(process.stderr.isTTY));
+  const { items } = await scanAll({
+    only: parseOnly(parsed.flags),
+    onScanStart: (candidate) => progress.start(candidate.name),
+    onScanDone: (item) => progress.done(item.name, formatBytes(item.bytes)),
+  });
+  progress.finish();
+
+  if (items.length === 0) {
+    process.stdout.write(p.green("Nothing to report - no dev caches found.") + "\n");
+    return;
+  }
+
+  const outRaw = parsed.flags.out;
+  const out = path.resolve(typeof outRaw === "string" && outRaw.length > 0 ? outRaw : "devclean-report.html");
+  const html = renderHtmlReport(items, { version: VERSION });
+  await writeFile(out, html, "utf8");
+  const total = totalOf(items);
+  process.stdout.write(p.green("Wrote " + out) + p.dim(" (" + formatBytes(Buffer.byteLength(html)) + ", " + formatCount(total.files) + " files scanned)") + "\n");
+
+  if (parsed.flags.open) {
+    const { spawn } = await import("node:child_process");
+    const command = process.platform === "win32" ? "cmd" : process.platform === "darwin" ? "open" : "xdg-open";
+    const args = process.platform === "win32" ? ["/c", "start", "", out] : [out];
+    const child = spawn(command, args, { detached: true, stdio: "ignore" });
+    child.unref();
+  }
+}
+
 async function main(): Promise<void> {
   const parsed = parseArgs(process.argv.slice(2));
   const colorEnabled = Boolean(process.stdout.isTTY) && !parsed.flags["no-color"] && !process.env.NO_COLOR;
@@ -312,6 +349,10 @@ async function main(): Promise<void> {
 
   if (parsed.command === "clean") {
     await commandClean(parsed, p);
+    return;
+  }
+  if (parsed.command === "report") {
+    await commandReport(parsed, p);
     return;
   }
   if (parsed.command === "projects") {

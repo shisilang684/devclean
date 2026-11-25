@@ -1,6 +1,6 @@
 {
   "name": "devclean",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Find and reclaim the gigabytes your dev tools are hoarding.",
   "type": "module",
   "bin": {

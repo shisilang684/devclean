@@ -33,6 +33,7 @@ Most cleaners either max out at `node_modules` or treat your downloaded LLM weig
 npx devclean              # scan known caches
 npx devclean clean        # delete low + medium risk caches (asks first)
 npx devclean projects .   # find node_modules/.venv/target inside your projects
+npx devclean report       # write a shareable HTML report
 ```
 
 Requires Node.js 18+. Works on Windows, macOS, and Linux.
@@ -64,6 +65,12 @@ target           240 MB  █░░░░░░░░░░░░░   8%    3.2k
 
 Only directories inside a real project (one with `package.json`, `pyproject.toml`, `Cargo.toml`, `.git`, ...) are reported, so the Python standard library and installed applications are never touched.
 
+## Shareable reports
+
+`devclean report` writes a single self-contained HTML file - no scripts loaded from the network, no data leaves your machine. It is handy for a team wiki, a "why is the CI runner out of disk" ticket, or just showing a colleague where their 80 GB went.
+
+![HTML report with a treemap of developer caches](docs/report.png)
+
 ## Safety
 
 - **Dry by default when you ask for it.** `--dry-run` prints the plan and deletes nothing.
@@ -92,6 +99,8 @@ Exit codes: `0` success, `1` error.
 --yes            skip the confirmation prompt
 --dry-run        show what would be deleted, delete nothing
 --depth <n>      projects: maximum directory depth (default 6)
+--out <file>     report: output path (default devclean-report.html)
+--open           report: open the file after writing it
 --no-color       disable ANSI colors
 ```
 
@@ -99,7 +108,7 @@ Exit codes: `0` success, `1` error.
 
 - [ ] Interactive TUI (select what to delete with arrow keys)
 - [ ] Growth tracking: "your caches grew 4.2 GB this week"
-- [ ] Shareable HTML report with a treemap
+- [x] Shareable HTML report with a treemap
 - [ ] Docker build cache and WSL disk usage
 - [ ] `devclean watch` with a size budget
 
