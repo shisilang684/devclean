@@ -39,7 +39,8 @@ npx devclean projects .   # find node_modules/.venv/target inside your projects
 npx devclean report       # write a shareable HTML report
 ```
 
-Requires Node.js 20+. Works on Windows, macOS, and Linux.
+Requires Node.js 20+. Works on Windows, macOS, and Linux. You can also install straight from
+GitHub: `npm i -g github:shisilang684/devclean`.
 
 ## What it scans
 

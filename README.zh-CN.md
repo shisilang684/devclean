@@ -39,7 +39,7 @@ npx devclean projects .   # 找出项目里的 node_modules/.venv/target
 npx devclean report       # 生成可分享的 HTML 报告
 ```
 
-需要 Node.js 20+，Windows / macOS / Linux 都能跑。
+需要 Node.js 20+，Windows / macOS / Linux 都能跑。也可以直接从 GitHub 安装：`npm i -g github:shisilang684/devclean`。
 
 ## 扫描范围
 
