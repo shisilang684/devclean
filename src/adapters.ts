@@ -231,6 +231,101 @@ export const ADAPTERS: Adapter[] = [
       return [path.join(env.home, ".lmstudio", "models"), path.join(env.home, ".cache", "lm-studio", "models")];
     },
   },
+  {
+    id: "nuget",
+    name: "NuGet packages",
+    risk: "medium",
+    note: "Global package folder shared by .NET projects. dotnet restore fetches it again.",
+    paths(env) {
+      return [path.join(env.home, ".nuget", "packages")];
+    },
+  },
+  {
+    id: "conda",
+    name: "Conda packages",
+    risk: "medium",
+    note: "Package archives extracted into conda environments. Existing envs may share these files.",
+    paths(env) {
+      const roots = ["miniconda3", "anaconda3", "miniforge3", "mambaforge"];
+      const list = roots.map((root) => path.join(env.home, root, "pkgs"));
+      list.push(path.join(env.localAppData, "conda", "pkgs"));
+      return list;
+    },
+  },
+  {
+    id: "sbt",
+    name: "sbt / Ivy cache",
+    risk: "low",
+    note: "Scala and Java dependencies downloaded by sbt.",
+    paths(env) {
+      return [path.join(env.home, ".ivy2", "cache"), path.join(env.home, ".sbt", "boot")];
+    },
+  },
+  {
+    id: "deno",
+    name: "Deno cache",
+    risk: "low",
+    note: "Remote modules and generated types. Fetched again on next run.",
+    paths(env) {
+      const dir =
+        env.vars.DENO_DIR ||
+        platformPath(
+          env,
+          path.join(env.localAppData, "deno"),
+          path.join(env.home, "Library", "Caches", "deno"),
+          path.join(env.home, ".cache", "deno"),
+        );
+      return [dir];
+    },
+  },
+  {
+    id: "cypress",
+    name: "Cypress binary cache",
+    risk: "low",
+    note: "Downloaded Cypress app binaries. Reinstalled by cypress install.",
+    paths(env) {
+      return [
+        platformPath(
+          env,
+          path.join(env.localAppData, "Cypress", "Cache"),
+          path.join(env.home, "Library", "Caches", "Cypress"),
+          path.join(env.home, ".cache", "Cypress"),
+        ),
+      ];
+    },
+  },
+  {
+    id: "electron",
+    name: "Electron cache",
+    risk: "low",
+    note: "Electron runtime downloads used by electron-builder and electron.",
+    paths(env) {
+      return [
+        platformPath(
+          env,
+          path.join(env.localAppData, "electron", "Cache"),
+          path.join(env.home, "Library", "Caches", "electron"),
+          path.join(env.home, ".cache", "electron"),
+        ),
+      ];
+    },
+  },
+  {
+    id: "composer",
+    name: "Composer cache",
+    risk: "low",
+    note: "PHP package archives downloaded by Composer.",
+    paths(env) {
+      return [
+        platformPath(
+          env,
+          path.join(env.localAppData, "Composer", "Cache"),
+          path.join(env.home, "Library", "Caches", "composer"),
+          path.join(env.home, ".cache", "composer"),
+        ),
+      ];
+    },
+  },
 ];
 
 export function adapterById(id: string): Adapter | undefined {

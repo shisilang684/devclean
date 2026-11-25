@@ -41,6 +41,8 @@ Requires Node.js 18+. Works on Windows, macOS, and Linux.
 
 ## What it scans
 
+22 cache families, each with an honest risk label.
+
 | Cache | Risk | What it is |
 | --- | --- | --- |
 | npm, pnpm, Yarn, Bun | low | Package tarballs, re-downloaded on demand |
@@ -48,6 +50,9 @@ Requires Node.js 18+. Works on Windows, macOS, and Linux.
 | Cargo registry, Go build cache | low | Compiled and downloaded build inputs |
 | Gradle, Maven | low / medium | Dependency caches |
 | Playwright, Puppeteer | low | Browser binaries |
+| NuGet, Composer, sbt / Ivy | medium / low | .NET, PHP and Scala dependency caches |
+| conda | medium | Package archives shared with conda environments |
+| Deno, Cypress, Electron | low | Runtime, browser and app binaries |
 | Hugging Face | medium | Model and dataset downloads |
 | Ollama, LM Studio | **high** | Local LLM weights - deleting forces a full re-pull |
 

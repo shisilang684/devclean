@@ -11,7 +11,7 @@ import { createPalette, renderTable, renderSummary, renderJson, removeFooter, ty
 import { cleanItems } from "./clean.js";
 import { formatBytes, formatCount, truncateMiddle } from "./util/format.js";
 
-const VERSION = "0.3.0";
+const VERSION = "0.4.0";
 
 type FlagValue = string | boolean;
 type Flags = Record<string, FlagValue>;
