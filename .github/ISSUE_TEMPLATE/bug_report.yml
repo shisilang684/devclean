@@ -1,0 +1,34 @@
+name: Bug report
+description: Something scanned wrong, crashed, or deleted when it should not have
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: "If devclean deleted something it should not have, say so first - that is a security issue and I will prioritize it."
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: Command you ran, what you expected, what you got. Paste the full output.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: devclean version
+      description: "Output of `devclean --version`"
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: OS and Node version
+      placeholder: "Windows 11, Node 22.11.0"
+    validations:
+      required: true
+  - type: textarea
+    id: json
+    attributes:
+      label: Scan output (optional)
+      description: "`devclean scan --json` - redact anything private in the paths."
+      render: json

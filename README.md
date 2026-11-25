@@ -6,7 +6,7 @@ English | [简体中文](README.zh-CN.md)
 
 `devclean` scans every cache your toolchain quietly accumulated - npm, pnpm, pip, Cargo, Gradle, Playwright browsers, Hugging Face models, local LLM weights - and shows you exactly what is safe to delete. One command, no config, no telemetry.
 
-![devclean scanning and reclaiming 1.4 GB of developer caches](docs/demo.png)
+![devclean scanning and reclaiming 1.4 GB of developer caches](https://raw.githubusercontent.com/shisilang684/devclean/main/docs/demo.png)
 
 ```
 $ npx devclean
@@ -70,7 +70,7 @@ Only directories inside a real project (one with `package.json`, `pyproject.toml
 
 `devclean report` writes a single self-contained HTML file - no scripts loaded from the network, no data leaves your machine. It is handy for a team wiki, a "why is the CI runner out of disk" ticket, or just showing a colleague where their 80 GB went.
 
-![HTML report with a treemap of developer caches](docs/report.png)
+![HTML report with a treemap of developer caches](https://raw.githubusercontent.com/shisilang684/devclean/main/docs/report.png)
 
 ## Safety
 

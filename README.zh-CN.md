@@ -6,7 +6,7 @@
 
 `devclean` 扫描开发工具悄悄留下的每一类缓存 —— npm、pnpm、pip、Cargo、Gradle、Playwright 浏览器、Hugging Face 模型、本地大模型权重 —— 并告诉哪些可以安全删除。一条命令，零配置，零遥测。
 
-![devclean 扫描并回收 1.4 GB 开发缓存](docs/demo.png)
+![devclean 扫描并回收 1.4 GB 开发缓存](https://raw.githubusercontent.com/shisilang684/devclean/main/docs/demo.png)
 
 ```bash
 npx devclean              # 扫描已知缓存

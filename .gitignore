@@ -5,3 +5,4 @@ dist/
 # generated reports
 devclean-report.html
 docs/report.html
+*.tgz
