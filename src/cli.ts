@@ -4,13 +4,14 @@ import process from "node:process";
 import readline from "node:readline/promises";
 import { writeFile } from "node:fs/promises";
 import { renderHtmlReport } from "./report-html.js";
+import { selectItems } from "./tui.js";
 import { discover, scanAll, scanCandidates, totalOf, type ScanItem } from "./scan.js";
 import { dirSize, findProjectArtifacts } from "./util/fs.js";
 import { createPalette, renderTable, renderSummary, renderJson, removeFooter, type Palette } from "./report.js";
 import { cleanItems } from "./clean.js";
 import { formatBytes, formatCount, truncateMiddle } from "./util/format.js";
 
-const VERSION = "0.2.0";
+const VERSION = "0.3.0";
 
 type FlagValue = string | boolean;
 type Flags = Record<string, FlagValue>;
@@ -37,6 +38,10 @@ function parseArgs(argv: string[]): Parsed {
     }
     if (arg === "-v") {
       flags.version = true;
+      continue;
+    }
+    if (arg === "-i") {
+      flags.interactive = true;
       continue;
     }
     if (arg.startsWith("--")) {
@@ -69,6 +74,7 @@ function helpText(p: Palette): string {
     p.bold("Usage"),
     "  devclean                  scan the caches your dev tools left behind",
     "  devclean clean            delete low and medium risk caches",
+    "  devclean clean -i         pick caches interactively",
     "  devclean projects [dir]   find node_modules, .venv, __pycache__, target",
     "  devclean report           write a shareable HTML report of the scan",
     "  devclean clean --all      include local LLM weights (high risk)",
@@ -78,6 +84,7 @@ function helpText(p: Palette): string {
     "  --only <ids>     comma separated adapter ids (npm,pip,cargo,...)",
     "  --top <n>        show only the n largest entries",
     "  --all            include high risk caches when cleaning",
+    "  -i, --interactive pick caches to delete in a list",
     "  --yes            skip the confirmation prompt",
     "  --dry-run        show what would be deleted, delete nothing",
     "  --depth <n>      projects: maximum directory depth (default 6)",
@@ -174,10 +181,25 @@ async function commandClean(parsed: Parsed, p: Palette): Promise<void> {
   });
   progress.finish();
 
-  const targets = all.filter((item) => includeHigh || item.risk !== "high");
+  let targets = all.filter((item) => includeHigh || item.risk !== "high");
   if (targets.length === 0) {
     process.stdout.write(p.green("Nothing to clean.") + "\n");
     return;
+  }
+
+  let picked = false;
+  if (!json && (parsed.flags.interactive || parsed.flags.i) && process.stdin.isTTY && process.stdout.isTTY) {
+    picked = true;
+    const chosen = await selectItems(all, { palette: p });
+    if (!chosen) {
+      process.stdout.write("Aborted.\n");
+      return;
+    }
+    if (chosen.length === 0) {
+      process.stdout.write(p.dim("Nothing selected.") + "\n");
+      return;
+    }
+    targets = chosen;
   }
 
   const total = totalOf(targets);
@@ -194,7 +216,7 @@ async function commandClean(parsed: Parsed, p: Palette): Promise<void> {
     return;
   }
 
-  if (!parsed.flags.yes) {
+  if (!parsed.flags.yes && !picked) {
     if (!process.stdin.isTTY) {
       fail("refusing to delete without --yes (stdin is not a TTY)");
     }

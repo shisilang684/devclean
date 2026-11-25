@@ -32,6 +32,7 @@ Most cleaners either max out at `node_modules` or treat your downloaded LLM weig
 ```bash
 npx devclean              # scan known caches
 npx devclean clean        # delete low + medium risk caches (asks first)
+npx devclean clean -i     # pick caches interactively
 npx devclean projects .   # find node_modules/.venv/target inside your projects
 npx devclean report       # write a shareable HTML report
 ```
@@ -96,6 +97,7 @@ Exit codes: `0` success, `1` error.
 --only <ids>     comma separated adapter ids (npm,pip,cargo,...)
 --top <n>        show only the n largest entries
 --all            include high risk caches when cleaning
+-i, --interactive pick caches to delete in a list
 --yes            skip the confirmation prompt
 --dry-run        show what would be deleted, delete nothing
 --depth <n>      projects: maximum directory depth (default 6)
@@ -106,7 +108,7 @@ Exit codes: `0` success, `1` error.
 
 ## Roadmap
 
-- [ ] Interactive TUI (select what to delete with arrow keys)
+- [x] Interactive TUI (select what to delete with arrow keys)
 - [ ] Growth tracking: "your caches grew 4.2 GB this week"
 - [x] Shareable HTML report with a treemap
 - [ ] Docker build cache and WSL disk usage
