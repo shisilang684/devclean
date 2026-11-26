@@ -1,0 +1,33 @@
+name: Cache request
+description: A developer tool whose cache devclean should find
+labels: [adapter]
+body:
+  - type: input
+    id: tool
+    attributes:
+      label: Tool
+      placeholder: "deno, bazel, sbt, CocoaPods..."
+    validations:
+      required: true
+  - type: textarea
+    id: paths
+    attributes:
+      label: Cache path on each OS
+      description: Windows, macOS, Linux. Check the tool's docs or run it once and look at where it writes.
+    validations:
+      required: true
+  - type: dropdown
+    id: risk
+    attributes:
+      label: How risky is deleting it?
+      options:
+        - low - re-downloaded automatically
+        - medium - expensive to rebuild
+        - high - contains user data
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Output of `devclean scan` before and after, or a size measurement - so I can trust the path.

@@ -1,0 +1,55 @@
+{
+  "name": "devclean",
+  "version": "0.5.0",
+  "description": "Find and reclaim the gigabytes your dev tools are hoarding.",
+  "type": "module",
+  "bin": {
+    "devclean": "dist/cli.js"
+  },
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "README.zh-CN.md",
+    "CHANGELOG.md",
+    "SECURITY.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "node src/cli.ts",
+    "test": "node --test",
+    "prepublishOnly": "npm run build",
+    "prepare": "npm run build"
+  },
+  "keywords": [
+    "cli",
+    "disk-space",
+    "cleanup",
+    "cache",
+    "node_modules",
+    "developer-tools",
+    "windows",
+    "macos",
+    "linux"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shisilang684/devclean.git"
+  },
+  "homepage": "https://github.com/shisilang684/devclean#readme",
+  "bugs": {
+    "url": "https://github.com/shisilang684/devclean/issues"
+  },
+  "author": "shisilang684"
+}
