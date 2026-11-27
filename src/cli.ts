@@ -13,7 +13,7 @@ import { ADAPTERS, detectEnv } from "./adapters.js";
 import { loadConfig } from "./config.js";
 import { formatBytes, formatCount, truncateMiddle } from "./util/format.js";
 
-const VERSION = "0.5.0";
+const VERSION = "0.5.1";
 
 type FlagValue = string | boolean;
 type Flags = Record<string, FlagValue>;

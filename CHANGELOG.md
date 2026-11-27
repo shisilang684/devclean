@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.1
+
+- Published on npm as `devclean-cache` (the bare name `devclean` is refused as too similar to the
+  existing `dev-clean` package). The installed binary is still `devclean`.
+- Documentation updated for the npm install path: `npm i -g devclean-cache`, `npx devclean-cache`.
+
 ## 0.5.0
 
 - Config file for ignores and custom caches: `devclean config` shows it, `DEVCLEAN_CONFIG`

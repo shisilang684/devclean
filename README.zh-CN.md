@@ -11,7 +11,7 @@
 ![devclean 扫描并清理 1.4 GB 开发缓存](https://raw.githubusercontent.com/shisilang684/devclean/main/docs/demo.png)
 
 ```
-$ npx devclean
+$ npx devclean-cache
 
 CACHE            SIZE  SHARE                  FILES  RISK    PATH
 pnpm store     998 MB  ██████████░░░░  70%   20.7k  low     …\AppData\Local\pnpm\store
@@ -32,11 +32,11 @@ Reclaim 1.4 GB with devclean clean
 ## 快速开始
 
 ```bash
-npx devclean              # 扫描已知缓存
-npx devclean clean        # 删除低/中风险缓存（先问你）
-npx devclean clean -i     # 交互式勾选要删的项
-npx devclean projects .   # 找出项目里的 node_modules/.venv/target
-npx devclean report       # 生成可分享的 HTML 报告
+npx devclean-cache              # 扫描已知缓存
+npx devclean-cache clean        # 删除低/中风险缓存（先问你）
+npx devclean-cache clean -i     # 交互式勾选要删的项
+npx devclean-cache projects .   # 找出项目里的 node_modules/.venv/target
+npx devclean-cache report       # 生成可分享的 HTML 报告
 ```
 
 需要 Node.js 20+，Windows / macOS / Linux 都能跑。也可以直接从 GitHub 安装：`npm i -g github:shisilang684/devclean`。
@@ -69,7 +69,7 @@ npx devclean report       # 生成可分享的 HTML 报告
 | 删除前给出风险等级 | 有 | 无 | 部分 | 无 |
 | 项目产物（`node_modules`、`.venv`、`target`） | 有，只限真实项目内 | 仅 `node_modules` | 无 | 手动 |
 | 可分享报告 | 自带 treemap 的 HTML | 无 | 无 | 无 |
-| 安装方式 | `npx devclean` | `npx npkill` | 装 App | 系统自带 |
+| 安装方式 | `npx devclean-cache` | `npx npkill` | 装 App | 系统自带 |
 
 真正拉开差距的是第二行：分不清 60 GB 模型下载和过期压缩包的工具，早晚会删掉贵的东西。
 
@@ -99,7 +99,7 @@ devclean config
 ## 项目产物
 
 ```
-$ npx devclean projects ~/code
+$ npx devclean-cache projects ~/code
 
 CACHE              SIZE  SHARE                  FILES  RISK    PATH
 node_modules     2.1 GB  ███████████░░░  72%   88.4k  low     ~/code/shop\node_modules
@@ -131,9 +131,9 @@ target           240 MB  █░░░░░░░░░░░░░   8%    3.2k
 ## 脚本化
 
 ```bash
-npx devclean --json | jq '.totalBytes'
-npx devclean clean --json --yes   # 只删低/中风险
-npx devclean projects . --json
+npx devclean-cache --json | jq '.totalBytes'
+npx devclean-cache clean --json --yes   # 只删低/中风险
+npx devclean-cache projects . --json
 ```
 
 退出码：`0` 成功，`1` 出错。

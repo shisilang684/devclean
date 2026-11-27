@@ -11,7 +11,7 @@ English | [简体中文](README.zh-CN.md)
 ![devclean scanning and reclaiming 1.4 GB of developer caches](https://raw.githubusercontent.com/shisilang684/devclean/main/docs/demo.png)
 
 ```
-$ npx devclean
+$ npx devclean-cache
 
 CACHE            SIZE  SHARE                  FILES  RISK    PATH
 pnpm store     998 MB  ██████████░░░░  70%   20.7k  low     C:\Users\me\AppData\Local\pnpm\store
@@ -32,15 +32,18 @@ Most cleaners either max out at `node_modules` or treat your downloaded LLM weig
 ## Quick start
 
 ```bash
-npx devclean              # scan known caches
-npx devclean clean        # delete low + medium risk caches (asks first)
-npx devclean clean -i     # pick caches interactively
-npx devclean projects .   # find node_modules/.venv/target inside your projects
-npx devclean report       # write a shareable HTML report
+npx devclean-cache              # scan known caches
+npx devclean-cache clean        # delete low + medium risk caches (asks first)
+npx devclean-cache clean -i     # pick caches interactively
+npx devclean-cache projects .   # find node_modules/.venv/target inside your projects
+npx devclean-cache report       # write a shareable HTML report
 ```
 
-Requires Node.js 20+. Works on Windows, macOS, and Linux. You can also install straight from
-GitHub: `npm i -g github:shisilang684/devclean`.
+Requires Node.js 20+. Works on Windows, macOS, and Linux.
+
+    npm i -g devclean-cache   # then just run: devclean scan
+
+Published on npm as [devclean-cache](https://www.npmjs.com/package/devclean-cache). The name devclean was refused as too similar to the existing dev-clean package, so the package is devclean-cache and the binary it installs is devclean.
 
 ## What it scans
 
@@ -70,7 +73,7 @@ GitHub: `npm i -g github:shisilang684/devclean`.
 | Risk label before anything is deleted | yes | no | partial | no |
 | Project artifacts (`node_modules`, `.venv`, `target`) | yes, inside real projects only | `node_modules` only | no | manual |
 | Shareable report | self-contained HTML treemap | no | no | no |
-| Install | `npx devclean` | `npx npkill` | app install | already there |
+| Install | `npx devclean-cache` | `npx npkill` | app install | already there |
 
 The gap that matters is the second row: a cleaner that does not know the difference between
 a 60 GB model download and a stale tarball will eventually delete something expensive.
@@ -103,7 +106,7 @@ Paths must be absolute or start with `~`; `risk` defaults to `medium`. Set
 ## Project artifacts
 
 ```
-$ npx devclean projects ~/code
+$ npx devclean-cache projects ~/code
 
 CACHE              SIZE  SHARE                  FILES  RISK    PATH
 node_modules     2.1 GB  ███████████░░░  72%   88.4k  low     ~/code/shop\node_modules
@@ -135,9 +138,9 @@ Security reports: see [SECURITY.md](SECURITY.md).
 ## Scripting
 
 ```bash
-npx devclean --json | jq '.totalBytes'
-npx devclean clean --json --yes   # only deletes low + medium risk
-npx devclean projects . --json
+npx devclean-cache --json | jq '.totalBytes'
+npx devclean-cache clean --json --yes   # only deletes low + medium risk
+npx devclean-cache projects . --json
 ```
 
 Exit codes: `0` success, `1` error.
