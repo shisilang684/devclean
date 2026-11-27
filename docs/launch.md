@@ -5,7 +5,7 @@ output beats polished copy.
 
 ## Before you post (30 minutes)
 
-- [ ] `npm publish` succeeded and `npx devclean` works from a clean shell
+- [ ] `npm publish` succeeded and `npx devclean-cache` works from a clean shell
 - [ ] Repo has a description, topics, and the demo image renders on GitHub
 - [ ] README first screen answers: what, why, how, how fast
 - [ ] CI badge is green
@@ -28,7 +28,7 @@ output beats polished copy.
 > one by risk. `devclean clean` shows the list and the total first, then asks. High-risk
 > items (local LLM weights) are skipped unless you pass `--all`. `--dry-run` deletes nothing.
 >
-> It is zero-dependency TypeScript, works on Windows/macOS/Linux, and `npx devclean` just runs.
+> It is zero-dependency TypeScript, works on Windows/macOS/Linux, and `npx devclean-cache` just runs.
 > There is also `devclean report` which writes a self-contained HTML treemap you can hand to
 > whoever is asking why the build machine is full.
 >
@@ -54,7 +54,7 @@ number you reclaimed and what surprised you. Plain links get removed.
 > 于是写了个 devclean：一次扫描 npm/pnpm/pip/cargo/gradle/playwright/Hugging Face/
 > Ollama 等 22 类缓存，按风险分级，`clean` 先列清单再确认，`--dry-run` 只预览。
 > `devclean report` 能生成一个自带 treemap 的 HTML，方便贴给同事看。
-> 零依赖，Windows/macOS/Linux 都能跑，`npx devclean` 直接用。
+> 零依赖，Windows/macOS/Linux 都能跑，`npx devclean-cache` 直接用。
 > 求补充我漏掉的缓存路径。
 
 ## 掘金 / 少数派
@@ -70,7 +70,7 @@ number you reclaimed and what surprised you. Plain links get removed.
 >
 > one command finds all of it and tells you what is safe to delete:
 >
-> npx devclean
+> npx devclean-cache
 >
 > [screenshot]
 
@@ -132,7 +132,7 @@ Pitch to Node Weekly, JavaScript Weekly, TLDR, Console DevTools:
 > --dry-run deletes nothing. MIT, no telemetry.
 
 **"Why TypeScript and not Rust/Go?"**
-> Zero install friction: `npx devclean` runs on any machine with Node 18, which every
+> Zero install friction: `npx devclean-cache` runs on any machine with Node 18, which every
 > developer already has. A single static binary is on the roadmap if people want it.
 
 **"Windows support?"**

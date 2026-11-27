@@ -1,6 +1,6 @@
 {
   "name": "devclean-cache",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Find and reclaim the gigabytes your dev tools are hoarding. Install as devclean-cache, run as devclean.",
   "type": "module",
   "bin": {

@@ -8,7 +8,7 @@ English | [简体中文](README.zh-CN.md)
 
 `devclean` scans every cache your toolchain quietly accumulated - npm, pnpm, pip, Cargo, Gradle, Playwright browsers, Hugging Face models, local LLM weights - and shows you exactly what is safe to delete. One command, no config, no telemetry.
 
-![devclean scanning developer caches](docs/screenshots/scan.png)
+![devclean scanning developer caches](https://raw.githubusercontent.com/shisilang684/devclean/main/docs/screenshots/scan.png)
 
 ```
 $ npx devclean-cache
@@ -49,15 +49,15 @@ The package is published on npm as [devclean-cache](https://www.npmjs.com/packag
 
 `clean -i` puts every cache in a checkbox list. Arrow keys move, space toggles, `a` selects all low and medium risk, enter shows the plan before anything is deleted:
 
-![devclean clean -i, choosing which caches to delete](docs/screenshots/clean-interactive.png)
+![devclean clean -i, choosing which caches to delete](https://raw.githubusercontent.com/shisilang684/devclean/main/docs/screenshots/clean-interactive.png)
 
 Then it reports what actually happened, not what it hoped would happen:
 
-![devclean reclaimed 101 MB after cleaning npm and pip caches](docs/screenshots/clean-result.png)
+![devclean reclaimed 101 MB after cleaning npm and pip caches](https://raw.githubusercontent.com/shisilang684/devclean/main/docs/screenshots/clean-result.png)
 
 The full command surface is small enough to read in one screen:
 
-![devclean --help](docs/screenshots/help.png)
+![devclean --help](https://raw.githubusercontent.com/shisilang684/devclean/main/docs/screenshots/help.png)
 
 ## What it scans
 
@@ -134,7 +134,7 @@ Only directories inside a real project (one with `package.json`, `pyproject.toml
 
 `devclean report` writes a single self-contained HTML file - no scripts loaded from the network, no data leaves your machine. It is handy for a team wiki, a "why is the CI runner out of disk" ticket, or just showing a colleague where their 80 GB went.
 
-![HTML report with a treemap of developer caches](docs/screenshots/report.png)
+![HTML report with a treemap of developer caches](https://raw.githubusercontent.com/shisilang684/devclean/main/docs/screenshots/report.png)
 
 ## Safety
 

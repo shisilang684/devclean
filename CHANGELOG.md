@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.2
+
+- README images use absolute URLs so they render on the npm package page as well as on GitHub.
+- The demo and social preview show `devclean`, the command you actually type after installing.
+- Removed a generated sample report from the repository; it contained real local paths.
+
 ## 0.5.1
 
 - Published on npm as `devclean-cache` (the bare name `devclean` is refused as too similar to the
