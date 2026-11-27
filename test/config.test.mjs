@@ -60,7 +60,10 @@ test("malformed config reports warnings and does not throw", async () => {
   await fs.rm(root, { recursive: true, force: true });
 });
 
-test("discover applies ignore and custom caches", async () => {
+// This fixture builds a Windows-style AppData layout, so it only runs on Windows.
+const windowsOnly = process.platform === "win32" ? false : "windows-only layout";
+
+test("discover applies ignore and custom caches", { skip: windowsOnly }, async () => {
   const root = await tempDir();
   const home = path.join(root, "home");
   const local = path.join(home, "AppData", "Local");

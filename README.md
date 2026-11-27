@@ -8,18 +8,18 @@ English | [简体中文](README.zh-CN.md)
 
 `devclean` scans every cache your toolchain quietly accumulated - npm, pnpm, pip, Cargo, Gradle, Playwright browsers, Hugging Face models, local LLM weights - and shows you exactly what is safe to delete. One command, no config, no telemetry.
 
-![devclean scanning and reclaiming 1.4 GB of developer caches](https://raw.githubusercontent.com/shisilang684/devclean/main/docs/demo.png)
+![devclean scanning developer caches](docs/screenshots/scan.png)
 
 ```
 $ npx devclean-cache
 
-CACHE            SIZE  SHARE                  FILES  RISK    PATH
-pnpm store     998 MB  ██████████░░░░  70%   20.7k  low     C:\Users\me\AppData\Local\pnpm\store
-Maven repo     327 MB  ███░░░░░░░░░░░  23%    7.2k  medium  C:\Users\me\.m2\repository
-npm cache     55.9 MB  █░░░░░░░░░░░░░   4%     106  low     C:\Users\me\AppData\Local\npm-cache\_cacache
-pip cache     44.0 MB  ░░░░░░░░░░░░░░   3%      50  low     C:\Users\me\AppData\Local\pip\Cache
+CACHE             SIZE  SHARE            FILES  RISK    PATH
+pnpm store     1001 MB  ██████████░░░░   20.8k  low     C:\Users\me\AppData\Local\pnpm\store
+Maven repo      327 MB  ███░░░░░░░░░░░    7.2k  medium  C:\Users\me\.m2\repository
+npm cache      56.5 MB  █░░░░░░░░░░░░░     117  low     C:\Users\me\AppData\Local\npm-cache\_cacache
+pip cache      44.0 MB  ░░░░░░░░░░░░░░      50  low     C:\Users\me\AppData\Local\pip\Cache
 
-Total: 1.4 GB across 4 locations, 28.1k files  (3.5s)
+Total: 1.4 GB across 4 locations, 28.1k files  (4.2s)
 Reclaim 1.4 GB with devclean clean
 ```
 
@@ -43,7 +43,21 @@ Requires Node.js 20+. Works on Windows, macOS, and Linux.
 
     npm i -g devclean-cache   # then just run: devclean scan
 
-Published on npm as [devclean-cache](https://www.npmjs.com/package/devclean-cache). The name devclean was refused as too similar to the existing dev-clean package, so the package is devclean-cache and the binary it installs is devclean.
+The package is published on npm as [devclean-cache](https://www.npmjs.com/package/devclean-cache). The bare name `devclean` is refused by npm as too similar to the existing `dev-clean` package, so the package name carries the suffix while the binary it installs is still `devclean`.
+
+## What it looks like
+
+`clean -i` puts every cache in a checkbox list. Arrow keys move, space toggles, `a` selects all low and medium risk, enter shows the plan before anything is deleted:
+
+![devclean clean -i, choosing which caches to delete](docs/screenshots/clean-interactive.png)
+
+Then it reports what actually happened, not what it hoped would happen:
+
+![devclean reclaimed 101 MB after cleaning npm and pip caches](docs/screenshots/clean-result.png)
+
+The full command surface is small enough to read in one screen:
+
+![devclean --help](docs/screenshots/help.png)
 
 ## What it scans
 
@@ -120,7 +134,7 @@ Only directories inside a real project (one with `package.json`, `pyproject.toml
 
 `devclean report` writes a single self-contained HTML file - no scripts loaded from the network, no data leaves your machine. It is handy for a team wiki, a "why is the CI runner out of disk" ticket, or just showing a colleague where their 80 GB went.
 
-![HTML report with a treemap of developer caches](https://raw.githubusercontent.com/shisilang684/devclean/main/docs/report.png)
+![HTML report with a treemap of developer caches](docs/screenshots/report.png)
 
 ## Safety
 

@@ -21,9 +21,20 @@ export interface DevcleanConfig {
   warnings: string[];
 }
 
+/**
+ * Resolve a configured path without rewriting it: an absolute path is kept
+ * exactly as written, so a Windows-style override stays valid on POSIX hosts
+ * (and vice versa). Only relative paths are resolved against the process cwd.
+ */
+function resolveConfigured(value: string, env: Env): string {
+  const expanded = expandHome(value, env);
+  if (path.posix.isAbsolute(expanded) || path.win32.isAbsolute(expanded)) return expanded;
+  return path.resolve(expanded);
+}
+
 export function configPath(env: Env): string {
   const override = env.vars.DEVCLEAN_CONFIG;
-  if (override) return path.resolve(override);
+  if (override) return resolveConfigured(override, env);
   if (env.platform === "win32") return path.join(env.appData, "devclean", "config.json");
   if (env.platform === "darwin") {
     return path.join(env.home, "Library", "Application Support", "devclean", "config.json");
@@ -111,7 +122,7 @@ export async function loadConfig(env: Env): Promise<DevcleanConfig> {
       config.extra.push({
         id,
         name: item.name.trim(),
-        path: path.resolve(expandHome(item.path, env)),
+        path: resolveConfigured(item.path, env),
         risk: isRisk(item.risk) ? item.risk : "medium",
         note:
           typeof item.note === "string" && item.note.trim().length > 0

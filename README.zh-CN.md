@@ -8,18 +8,18 @@
 
 `devclean` 会扫描你整条工具链悄悄攒下的缓存——npm、pnpm、pip、Cargo、Gradle、Playwright 浏览器、Hugging Face 模型、本地大模型权重——然后告诉你哪些可以安全删掉。一条命令，零配置，零遥测。
 
-![devclean 扫描并清理 1.4 GB 开发缓存](https://raw.githubusercontent.com/shisilang684/devclean/main/docs/demo.png)
+![devclean 扫描开发缓存](docs/screenshots/scan.png)
 
 ```
 $ npx devclean-cache
 
-CACHE            SIZE  SHARE                  FILES  RISK    PATH
-pnpm store     998 MB  ██████████░░░░  70%   20.7k  low     …\AppData\Local\pnpm\store
-Maven repo     327 MB  ███░░░░░░░░░░░  23%    7.2k  medium  C:\Users\me\.m2\repository
-npm cache     55.9 MB  █░░░░░░░░░░░░░   4%     106  low     …\npm-cache\_cacache
-pip cache     44.0 MB  ░░░░░░░░░░░░░░   3%      50  low     …\pip\Cache
+CACHE             SIZE  SHARE            FILES  RISK    PATH
+pnpm store     1001 MB  ██████████░░░░   20.8k  low     …\AppData\Local\pnpm\store
+Maven repo      327 MB  ███░░░░░░░░░░░    7.2k  medium  C:\Users\me\.m2\repository
+npm cache      56.5 MB  █░░░░░░░░░░░░░     117  low     …\npm-cache\_cacache
+pip cache      44.0 MB  ░░░░░░░░░░░░░░      50  low     …\pip\Cache
 
-Total: 1.4 GB across 4 locations, 28.1k files  (3.5s)
+Total: 1.4 GB across 4 locations, 28.1k files  (4.2s)
 Reclaim 1.4 GB with devclean clean
 ```
 
@@ -39,7 +39,21 @@ npx devclean-cache projects .   # 找出项目里的 node_modules/.venv/target
 npx devclean-cache report       # 生成可分享的 HTML 报告
 ```
 
-需要 Node.js 20+，Windows / macOS / Linux 都能跑。也可以直接从 GitHub 安装：`npm i -g github:shisilang684/devclean`。
+需要 Node.js 20+，Windows / macOS / Linux 都能跑。不想走 registry 的话，可以直接装预编译包：`npm i -g https://github.com/shisilang684/devclean/releases/download/v0.5.0/devclean-0.5.0.tgz`。
+
+## 长什么样
+
+`clean -i` 把所有缓存列成勾选清单：方向键移动、空格切换、`a` 全选低/中风险项，回车后先给你看清单和总量，最后才动手：
+
+![devclean clean -i 勾选要删除的缓存](docs/screenshots/clean-interactive.png)
+
+删完它报的是实际结果，不是"预计结果"：
+
+![devclean 清理 npm 和 pip 缓存后回收 101 MB](docs/screenshots/clean-result.png)
+
+完整的命令面一屏就能看完：
+
+![devclean --help](docs/screenshots/help.png)
 
 ## 扫描范围
 
@@ -113,7 +127,7 @@ target           240 MB  █░░░░░░░░░░░░░   8%    3.2k
 
 `devclean report` 会写一个自包含的 HTML 文件——不加载任何网络脚本，数据不离开你的机器。适合贴进团队 wiki、"CI 机器为什么又满了"的工单，或者给同事看看他的 80 GB 去哪了。
 
-![带 treemap 的 HTML 报告](https://raw.githubusercontent.com/shisilang684/devclean/main/docs/report.png)
+![带 treemap 的 HTML 报告](docs/screenshots/report.png)
 
 ## 安全
 

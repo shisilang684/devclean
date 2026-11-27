@@ -48,7 +48,10 @@ test("findProjectArtifacts only reports artifacts inside projects", async () => 
   await fs.rm(root, { recursive: true, force: true });
 });
 
-test("discover honors a custom env and skips missing paths", async () => {
+// This fixture builds a Windows-style AppData layout, so it only runs on Windows.
+const windowsOnly = process.platform === "win32" ? false : "windows-only layout";
+
+test("discover honors a custom env and skips missing paths", { skip: windowsOnly }, async () => {
   const root = await tempDir();
   const home = path.join(root, "home");
   const local = path.join(home, "AppData", "Local");
@@ -64,6 +67,26 @@ test("discover honors a custom env and skips missing paths", async () => {
   };
   const candidates = await discover({ env });
   const ids = candidates.map((c) => c.id).sort();
+  assert.deepEqual(ids, ["cargo", "npm"]);
+  await fs.rm(root, { recursive: true, force: true });
+});
+
+// The same idea as above, but with a POSIX home, so non-Windows runners still
+// exercise cache discovery against a real filesystem.
+test("discover finds npm and cargo caches under a POSIX home", { skip: process.platform === "win32" ? "posix-only layout" : false }, async () => {
+  const root = await tempDir();
+  const home = path.join(root, "home");
+  await writeFile(path.join(home, ".npm", "_cacache", "content", "x"), 100);
+  await writeFile(path.join(home, ".cargo", "registry", "cache", "y"), 100);
+
+  const env = {
+    platform: "linux",
+    home,
+    localAppData: path.join(home, ".local", "share"),
+    appData: path.join(home, ".config"),
+    vars: {},
+  };
+  const ids = (await discover({ env })).map((c) => c.id).sort();
   assert.deepEqual(ids, ["cargo", "npm"]);
   await fs.rm(root, { recursive: true, force: true });
 });
